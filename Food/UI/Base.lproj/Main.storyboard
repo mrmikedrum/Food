@@ -159,7 +159,7 @@
                                                     <rect key="frame" x="16" y="7" width="343" height="29.5"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     <connections>
                                                         <action selector="nameUpdated:" destination="npV-x3-Fd4" eventType="editingChanged" id="0D5-ks-7nj"/>
                                                     </connections>
