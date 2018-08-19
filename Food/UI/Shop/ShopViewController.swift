@@ -23,10 +23,18 @@ class ShopViewController: UITableViewController {
             meals.forEach { ingredients.append(contentsOf: $0.ingredients) }
         }
         
-        self.deliIngredients = ingredients.filter { $0.area == .Deli }
-        self.produceIngredients = ingredients.filter { $0.area == .Produce }
-        self.meatIngredients = ingredients.filter { $0.area == .Meat }
-        self.dairyIngredients = ingredients.filter { $0.area == .Dairy }
+        ingredients.forEach { ingredient in
+            let count = ingredients.filter { $0 == ingredient }.count
+            let name = "\(count) \(ingredient.name)"
+            let newElement = Ingredient(name: name, type: ingredient.type, area: ingredient.area)
+            switch newElement.area {
+            case .Dairy: if !self.dairyIngredients.contains(newElement) { self.dairyIngredients.append(newElement) }
+            case .Deli: if !self.deliIngredients.contains(newElement) { self.deliIngredients.append(newElement) }
+            case .Produce: if !self.produceIngredients.contains(newElement) { self.produceIngredients.append(newElement) }
+            case .Meat: if !self.meatIngredients.contains(newElement) { self.meatIngredients.append(newElement) }
+            }
+        }
+        
         self.checkedIngredients = []
     }
     
