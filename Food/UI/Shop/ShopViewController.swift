@@ -14,6 +14,8 @@ class ShopViewController: UITableViewController {
     private var produceIngredients: [Ingredient] = []
     private var meatIngredients: [Ingredient] = []
     private var dairyIngredients: [Ingredient] = []
+    private var frozenIngredients: [Ingredient] = []
+    private var miscIngredients: [Ingredient] = []
     private var checkedIngredients: [Ingredient] = []
     
     private func generateShoppingList() {
@@ -32,6 +34,8 @@ class ShopViewController: UITableViewController {
             case .Deli: if !self.deliIngredients.contains(newElement) { self.deliIngredients.append(newElement) }
             case .Produce: if !self.produceIngredients.contains(newElement) { self.produceIngredients.append(newElement) }
             case .Meat: if !self.meatIngredients.contains(newElement) { self.meatIngredients.append(newElement) }
+            case .Frozen: if !self.frozenIngredients.contains(newElement) { self.frozenIngredients.append(newElement) }
+            case .Misc: if !self.miscIngredients.contains(newElement) { self.miscIngredients.append(newElement) }
             }
         }
         
@@ -45,7 +49,7 @@ class ShopViewController: UITableViewController {
     }
     
     private enum Sections: Int {
-        case Produce, Meat, Deli, Dairy, Checked, Count
+        case Produce, Meat, Deli, Dairy, Frozen, Misc, Checked, Count
     }
     
     private func ingredient(forIndexPath indexPath: IndexPath) -> Ingredient? {
@@ -83,6 +87,8 @@ class ShopViewController: UITableViewController {
         case Sections.Meat.rawValue: return "Meat"
         case Sections.Deli.rawValue: return "Deli"
         case Sections.Dairy.rawValue: return "Dairy"
+        case Sections.Frozen.rawValue: return "Frozen"
+        case Sections.Misc.rawValue: return "Miscellaneous"
         case Sections.Checked.rawValue: return "Done"
         default: return nil
         }
@@ -118,6 +124,8 @@ class ShopViewController: UITableViewController {
         case Sections.Meat.rawValue: closure(&self.meatIngredients)
         case Sections.Deli.rawValue: closure(&self.deliIngredients)
         case Sections.Dairy.rawValue: closure(&self.dairyIngredients)
+        case Sections.Frozen.rawValue: closure(&self.frozenIngredients)
+        case Sections.Misc.rawValue: closure(&self.miscIngredients)
         case Sections.Checked.rawValue: closure(&self.checkedIngredients)
         default: return
         }
@@ -129,6 +137,8 @@ class ShopViewController: UITableViewController {
         case .Deli: return Sections.Deli.rawValue
         case .Produce: return Sections.Produce.rawValue
         case .Meat: return Sections.Meat.rawValue
+        case .Frozen: return Sections.Frozen.rawValue
+        case .Misc: return Sections.Misc.rawValue
         }
     }
 }

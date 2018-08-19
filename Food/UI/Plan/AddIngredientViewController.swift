@@ -56,6 +56,12 @@ class AddIngredientViewController: UITableViewController {
             alert.addAction(UIAlertAction(title: "Dairy", style: .default) { [unowned self] (action) in
                 self.area = .Dairy
             })
+            alert.addAction(UIAlertAction(title: "Frozen", style: .default) { [unowned self] (action) in
+                self.area = .Frozen
+            })
+            alert.addAction(UIAlertAction(title: "Miscellaneous", style: .default) { [unowned self] (action) in
+                self.area = .Misc
+            })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         default: return
         }

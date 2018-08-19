@@ -12,7 +12,7 @@ enum FoodType: Int, Codable {
     case Protein, Vegetable, Other
 }
 enum ShoppingArea: Int, Codable {
-    case Produce, Meat, Deli, Dairy
+    case Produce, Meat, Deli, Dairy, Frozen, Misc
 }
 
 struct Ingredient: Equatable, Codable {
