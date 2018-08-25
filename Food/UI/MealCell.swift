@@ -48,6 +48,7 @@ class MealCell: UITableViewCell {
         let labels = self.labels(withCount: meal.ingredients.count)
         var index = 0
         for ingredient in meal.ingredients {
+            labels[index].isHidden = false
             labels[index].text = ingredient.name
             index += 1
         }
@@ -63,6 +64,15 @@ class MealCell: UITableViewCell {
             return labels
         }
         return []
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        guard let labels = self.ingredientsStackView.subviews as? [UILabel] else {return}
+        
+        for label in labels {
+            label.isHidden = true
+        }
     }
 }
 
