@@ -68,36 +68,55 @@ class PlanViewController: UITableViewController {
         self.performSegue(withIdentifier: "AddMeal", sender: self)
     }
     
+    private func meal(forIndexPath indexPath: IndexPath) -> Meal? {
+        switch indexPath.section {
+        case 0:
+            if let meal = self.selectedBreakfast {
+                return meal
+            } else {
+                return self.breakfasts[indexPath.item]
+            }
+        case 1:
+            if let meal = self.selectedLunch {
+                return meal
+            } else {
+                return self.lunches[indexPath.item]
+            }
+        case 2:
+            if let meal = self.selectedDinner {
+                return meal
+            } else {
+                return self.dinners[indexPath.item]
+            }
+        default: return nil;
+        }
+    }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return self.breakfasts.count
-        case 1: return self.lunches.count
-        case 2: return self.dinners.count
+        case 0: return self.selectedBreakfast == nil ? self.breakfasts.count : 1
+        case 1: return self.selectedLunch == nil ? self.lunches.count : 1
+        case 2: return self.selectedDinner == nil ? self.dinners.count : 1
         default: return 0
         }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.identifier) as! MealCell
-        switch indexPath.section {
-        case 0:
-            cell.meal = self.breakfasts[indexPath.item]
-            cell.accessoryType = self.selectedBreakfast == cell.meal ? .checkmark : .none
-        case 1:
-            cell.meal = self.lunches[indexPath.item]
-            cell.accessoryType = self.selectedLunch == cell.meal ? .checkmark : .none
-
-        case 2:
-            cell.meal = self.dinners[indexPath.item]
-            cell.accessoryType = self.selectedDinner == cell.meal ? .checkmark : .none
-
-        default: break;
-        }
         cell.includesTitle = false
+        
+        guard let meal = self.meal(forIndexPath: indexPath) else {return cell}
+        cell.meal = meal
+        
+        switch meal.time {
+        case .Breakfast: cell.accessoryType = meal == self.selectedBreakfast ? .checkmark : .none
+        case .Lunch: cell.accessoryType = meal == self.selectedLunch ? .checkmark : .none
+        case .Dinner: cell.accessoryType = meal == self.selectedDinner ? .checkmark : .none
+        }
         return cell
     }
     
@@ -113,16 +132,10 @@ class PlanViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? MealCell, let meal = cell.meal else {return}
         
-        let selecting: Bool
-        switch cell.accessoryType {
-        case .checkmark:
-            cell.accessoryType = .none
-            selecting = false
-            
-        default:
-            cell.accessoryType = .checkmark
-            selecting = true
-        }
+        let selecting = cell.accessoryType == .none
+        cell.accessoryType = selecting ? .checkmark : .none
+
+        tableView.beginUpdates()
 
         switch meal.time {
         case .Breakfast: self.selectedBreakfast = selecting ? meal : nil
@@ -130,8 +143,26 @@ class PlanViewController: UITableViewController {
         case .Dinner: self.selectedDinner = selecting ? meal : nil
         }
         
+        var rows: [IndexPath] = []
+        if selecting {
+            for index in 0..<tableView.numberOfRows(inSection: indexPath.section) {
+                if indexPath.item != index {
+                    rows.append(IndexPath(item: index, section: indexPath.section))
+                }
+            }
+            tableView.deleteRows(at: rows, with: .middle)
+        } else {
+            for index in 0..<self.tableView(tableView, numberOfRowsInSection: indexPath.section) {
+                let insertedIndexPath = IndexPath(item: index, section: indexPath.section)
+                if meal != self.meal(forIndexPath: insertedIndexPath) {
+                    rows.append(insertedIndexPath)
+                }
+            }
+            tableView.insertRows(at: rows, with: .middle)
+        }
+        tableView.endUpdates()
+        
         self.saveButton.isEnabled = validate()
-        print(validate())
     }
 }
 
