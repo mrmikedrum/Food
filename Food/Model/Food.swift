@@ -15,7 +15,11 @@ enum ShoppingArea: Int, Codable {
     case Produce, Meat, Deli, Dairy, Frozen, Misc
 }
 
-struct Ingredient: Equatable, Codable {
+struct Ingredient: Equatable, Codable, Comparable {
+    static func < (lhs: Ingredient, rhs: Ingredient) -> Bool {
+        return lhs.name < rhs.name
+    }
+    
     let name: String
     let type: FoodType
     let area: ShoppingArea

@@ -11,9 +11,9 @@ import UIKit
 class AddMealViewController: UITableViewController {
     
     private func loadIngredients() {
-        self.proteins = ObjectManager.shared.ingredients.filter { $0.type == .Protein }
-        self.vegetables = ObjectManager.shared.ingredients.filter { $0.type == .Vegetable }
-        self.others = ObjectManager.shared.ingredients.filter { $0.type == .Other }
+        self.proteins = ObjectManager.shared.ingredients.filter { $0.type == .Protein }.sorted()
+        self.vegetables = ObjectManager.shared.ingredients.filter { $0.type == .Vegetable }.sorted()
+        self.others = ObjectManager.shared.ingredients.filter { $0.type == .Other }.sorted()
     }
     
     private var proteins: [Ingredient] = []
