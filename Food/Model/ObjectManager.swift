@@ -20,35 +20,39 @@ class ObjectManager {
     private(set) var days: [Day] = [] {
         didSet {
             sync()
+            NotificationCenter.default.post(Notification(name: DayUpdateNotification))
         }
     }
     private(set) var meals: [Meal] = [] {
         didSet {
             sync()
+            NotificationCenter.default.post(Notification(name: MealUpdateNotification))
         }
     }
     private(set) var ingredients: [Ingredient] = [] {
         didSet {
             sync()
+            NotificationCenter.default.post(Notification(name: IngredientUpdateNotification))
         }
     }
     
     func bootstrap() {
-        self.days = DataLoader.loadDays()
-        self.meals = DataLoader.loadMeals()
-        self.ingredients = DataLoader.loadIngredients()
-        self.ready = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.days = DataLoader.loadDays()
+            self.meals = DataLoader.loadMeals()
+            self.ingredients = DataLoader.loadIngredients()
+            self.ready = true
+        }
     }
     
     func sync() {
         guard ready else {return}
         
-        DataLoader.save(days: self.days)
-        DataLoader.save(meals: self.meals)
-        DataLoader.save(ingredients: self.ingredients)
-        NotificationCenter.default.post(Notification(name: DayUpdateNotification))
-        NotificationCenter.default.post(Notification(name: MealUpdateNotification))
-        NotificationCenter.default.post(Notification(name: IngredientUpdateNotification))
+        DispatchQueue.global(qos: .userInitiated).async {
+            DataLoader.save(days: self.days)
+            DataLoader.save(meals: self.meals)
+            DataLoader.save(ingredients: self.ingredients)
+        }
     }
     
     func add(day: Day) {
